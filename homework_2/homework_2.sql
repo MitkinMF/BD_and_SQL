@@ -1,5 +1,5 @@
-/*
-1.Создать БД vk, исполнив скрипт _vk_db_creation.sql (в материалах к уроку)
+п»ї/*
+1.РЎРѕР·РґР°С‚СЊ Р‘Р” vk, РёСЃРїРѕР»РЅРёРІ СЃРєСЂРёРїС‚ _vk_db_creation.sql (РІ РјР°С‚РµСЂРёР°Р»Р°С… Рє СѓСЂРѕРєСѓ)
 */
 DROP DATABASE IF EXISTS vk;
 CREATE DATABASE vk;
@@ -9,13 +9,13 @@ DROP TABLE IF EXISTS users;
 CREATE TABLE users (
 	id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, 
     firstname VARCHAR(50),
-    lastname VARCHAR(50) COMMENT 'Фамиль', -- COMMENT на случай, если имя неочевидное
+    lastname VARCHAR(50) COMMENT 'Р¤Р°РјРёР»СЊ', -- COMMENT РЅР° СЃР»СѓС‡Р°Р№, РµСЃР»Рё РёРјСЏ РЅРµРѕС‡РµРІРёРґРЅРѕРµ
     email VARCHAR(120) UNIQUE,
  	password_hash VARCHAR(100), -- 123456 => vzx;clvgkajrpo9udfxvsldkrn24l5456345t
 	phone BIGINT UNSIGNED UNIQUE, 
 	
     INDEX users_firstname_lastname_idx(firstname, lastname)
-) COMMENT 'юзеры';
+) COMMENT 'СЋР·РµСЂС‹';
 
 DROP TABLE IF EXISTS `profiles`;
 CREATE TABLE `profiles` (
@@ -26,13 +26,13 @@ CREATE TABLE `profiles` (
     created_at DATETIME DEFAULT NOW(),
     hometown VARCHAR(100)
 	
-    -- , FOREIGN KEY (photo_id) REFERENCES media(id) -- пока рано, т.к. таблицы media еще нет
+    -- , FOREIGN KEY (photo_id) REFERENCES media(id) -- РїРѕРєР° СЂР°РЅРѕ, С‚.Рє. С‚Р°Р±Р»РёС†С‹ media РµС‰Рµ РЅРµС‚
 );
 
 ALTER TABLE `profiles` ADD CONSTRAINT fk_user_id
     FOREIGN KEY (user_id) REFERENCES users(id)
-    ON UPDATE CASCADE -- (значение по умолчанию)
-    ON DELETE RESTRICT; -- (значение по умолчанию)
+    ON UPDATE CASCADE -- (Р·РЅР°С‡РµРЅРёРµ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ)
+    ON DELETE RESTRICT; -- (Р·РЅР°С‡РµРЅРёРµ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ)
 
 DROP TABLE IF EXISTS messages;
 CREATE TABLE messages (
@@ -40,7 +40,7 @@ CREATE TABLE messages (
 	from_user_id BIGINT UNSIGNED NOT NULL,
     to_user_id BIGINT UNSIGNED NOT NULL,
     body TEXT,
-    created_at DATETIME DEFAULT NOW(), -- можно будет даже не упоминать это поле при вставке
+    created_at DATETIME DEFAULT NOW(), -- РјРѕР¶РЅРѕ Р±СѓРґРµС‚ РґР°Р¶Рµ РЅРµ СѓРїРѕРјРёРЅР°С‚СЊ СЌС‚Рѕ РїРѕР»Рµ РїСЂРё РІСЃС‚Р°РІРєРµ
 
     FOREIGN KEY (from_user_id) REFERENCES users(id),
     FOREIGN KEY (to_user_id) REFERENCES users(id)
@@ -48,20 +48,20 @@ CREATE TABLE messages (
 
 DROP TABLE IF EXISTS friend_requests;
 CREATE TABLE friend_requests (
-	-- id SERIAL, -- изменили на составной ключ (initiator_user_id, target_user_id)
+	-- id SERIAL, -- РёР·РјРµРЅРёР»Рё РЅР° СЃРѕСЃС‚Р°РІРЅРѕР№ РєР»СЋС‡ (initiator_user_id, target_user_id)
 	initiator_user_id BIGINT UNSIGNED NOT NULL,
     target_user_id BIGINT UNSIGNED NOT NULL,
     `status` ENUM('requested', 'approved', 'declined', 'unfriended'), # DEFAULT 'requested',
-    -- `status` TINYINT(1) UNSIGNED, -- в этом случае в коде хранили бы цифирный enum (0, 1, 2, 3...)
+    -- `status` TINYINT(1) UNSIGNED, -- РІ СЌС‚РѕРј СЃР»СѓС‡Р°Рµ РІ РєРѕРґРµ С…СЂР°РЅРёР»Рё Р±С‹ С†РёС„РёСЂРЅС‹Р№ enum (0, 1, 2, 3...)
 	requested_at DATETIME DEFAULT NOW(),
-	updated_at DATETIME ON UPDATE CURRENT_TIMESTAMP, -- можно будет даже не упоминать это поле при обновлении
+	updated_at DATETIME ON UPDATE CURRENT_TIMESTAMP, -- РјРѕР¶РЅРѕ Р±СѓРґРµС‚ РґР°Р¶Рµ РЅРµ СѓРїРѕРјРёРЅР°С‚СЊ СЌС‚Рѕ РїРѕР»Рµ РїСЂРё РѕР±РЅРѕРІР»РµРЅРёРё
 	
     PRIMARY KEY (initiator_user_id, target_user_id),
     FOREIGN KEY (initiator_user_id) REFERENCES users(id),
     FOREIGN KEY (target_user_id) REFERENCES users(id)-- ,
     -- CHECK (initiator_user_id <> target_user_id)
 );
--- чтобы пользователь сам себе не отправил запрос в друзья
+-- С‡С‚РѕР±С‹ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ СЃР°Рј СЃРµР±Рµ РЅРµ РѕС‚РїСЂР°РІРёР» Р·Р°РїСЂРѕСЃ РІ РґСЂСѓР·СЊСЏ
 -- ALTER TABLE friend_requests 
 -- ADD CHECK(initiator_user_id <> target_user_id);
 
@@ -71,7 +71,7 @@ CREATE TABLE communities(
 	name VARCHAR(150),
 	admin_user_id BIGINT UNSIGNED NOT NULL,
 	
-	INDEX communities_name_idx(name), -- индексу можно давать свое имя (communities_name_idx)
+	INDEX communities_name_idx(name), -- РёРЅРґРµРєСЃСѓ РјРѕР¶РЅРѕ РґР°РІР°С‚СЊ СЃРІРѕРµ РёРјСЏ (communities_name_idx)
 	foreign key (admin_user_id) references users(id)
 );
 
@@ -80,7 +80,7 @@ CREATE TABLE users_communities(
 	user_id BIGINT UNSIGNED NOT NULL,
 	community_id BIGINT UNSIGNED NOT NULL,
   
-	PRIMARY KEY (user_id, community_id), -- чтобы не было 2 записей о пользователе и сообществе
+	PRIMARY KEY (user_id, community_id), -- С‡С‚РѕР±С‹ РЅРµ Р±С‹Р»Рѕ 2 Р·Р°РїРёСЃРµР№ Рѕ РїРѕР»СЊР·РѕРІР°С‚РµР»Рµ Рё СЃРѕРѕР±С‰РµСЃС‚РІРµ
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (community_id) REFERENCES communities(id)
 );
@@ -88,7 +88,7 @@ CREATE TABLE users_communities(
 DROP TABLE IF EXISTS media_types;
 CREATE TABLE media_types(
 	id SERIAL,
-    name VARCHAR(255), -- записей мало, поэтому в индексе нет необходимости
+    name VARCHAR(255), -- Р·Р°РїРёСЃРµР№ РјР°Р»Рѕ, РїРѕСЌС‚РѕРјСѓ РІ РёРЅРґРµРєСЃРµ РЅРµС‚ РЅРµРѕР±С…РѕРґРёРјРѕСЃС‚Рё
     created_at DATETIME DEFAULT NOW(),
     updated_at DATETIME ON UPDATE CURRENT_TIMESTAMP
 );
@@ -117,10 +117,10 @@ CREATE TABLE likes(
     media_id BIGINT UNSIGNED NOT NULL,
     created_at DATETIME DEFAULT NOW()
 
-    -- PRIMARY KEY (user_id, media_id) – можно было и так вместо id в качестве PK
-  	-- слишком увлекаться индексами тоже опасно, рациональнее их добавлять по мере необходимости (напр., провисают по времени какие-то запросы)  
+    -- PRIMARY KEY (user_id, media_id) вЂ“ РјРѕР¶РЅРѕ Р±С‹Р»Рѕ Рё С‚Р°Рє РІРјРµСЃС‚Рѕ id РІ РєР°С‡РµСЃС‚РІРµ PK
+  	-- СЃР»РёС€РєРѕРј СѓРІР»РµРєР°С‚СЊСЃСЏ РёРЅРґРµРєСЃР°РјРё С‚РѕР¶Рµ РѕРїР°СЃРЅРѕ, СЂР°С†РёРѕРЅР°Р»СЊРЅРµРµ РёС… РґРѕР±Р°РІР»СЏС‚СЊ РїРѕ РјРµСЂРµ РЅРµРѕР±С…РѕРґРёРјРѕСЃС‚Рё (РЅР°РїСЂ., РїСЂРѕРІРёСЃР°СЋС‚ РїРѕ РІСЂРµРјРµРЅРё РєР°РєРёРµ-С‚Рѕ Р·Р°РїСЂРѕСЃС‹)  
 
-/* намеренно забыли, чтобы позднее увидеть их отсутствие в ER-диаграмме
+/* РЅР°РјРµСЂРµРЅРЅРѕ Р·Р°Р±С‹Р»Рё, С‡С‚РѕР±С‹ РїРѕР·РґРЅРµРµ СѓРІРёРґРµС‚СЊ РёС… РѕС‚СЃСѓС‚СЃС‚РІРёРµ РІ ER-РґРёР°РіСЂР°РјРјРµ
     , FOREIGN KEY (user_id) REFERENCES users(id)
     , FOREIGN KEY (media_id) REFERENCES media(id)
 */
@@ -139,8 +139,8 @@ ADD CONSTRAINT profiles_fk_1
 FOREIGN KEY (photo_id) REFERENCES media(id);
 
 /*
-2.Написать скрипт, добавляющий в созданную БД vk 2-3 новые таблицы 
-(с перечнем полей, указанием индексов и внешних ключей) (CREATE TABLE)
+2.РќР°РїРёСЃР°С‚СЊ СЃРєСЂРёРїС‚, РґРѕР±Р°РІР»СЏСЋС‰РёР№ РІ СЃРѕР·РґР°РЅРЅСѓСЋ Р‘Р” vk 2-3 РЅРѕРІС‹Рµ С‚Р°Р±Р»РёС†С‹ 
+(СЃ РїРµСЂРµС‡РЅРµРј РїРѕР»РµР№, СѓРєР°Р·Р°РЅРёРµРј РёРЅРґРµРєСЃРѕРІ Рё РІРЅРµС€РЅРёС… РєР»СЋС‡РµР№) (CREATE TABLE)
 */
 
 DROP TABLE IF EXISTS `photo_albums`;
@@ -172,7 +172,7 @@ ALTER TABLE `profiles` ADD CONSTRAINT fk_profiles_city_id
 FOREIGN KEY (city_id) REFERENCES cities(id);
 
 /*
-Заполнить 2 таблицы БД vk данными (по 10 записей в каждой таблице) (INSERT)
+Р—Р°РїРѕР»РЅРёС‚СЊ 2 С‚Р°Р±Р»РёС†С‹ Р‘Р” vk РґР°РЅРЅС‹РјРё (РїРѕ 10 Р·Р°РїРёСЃРµР№ РІ РєР°Р¶РґРѕР№ С‚Р°Р±Р»РёС†Рµ) (INSERT)
 */
 
 INSERT INTO users (firstname, lastname, email, phone) 
@@ -234,58 +234,58 @@ VALUES
 (5,4,'Vel et laboriosam cumque rerum veniam placeat.','2021-01-26 15:30:16');
 
 
------------------- Задача 3.
+------------------ Р—Р°РґР°С‡Р° 3.
 /*
-4.* Написать скрипт, отмечающий несовершеннолетних пользователей как неактивных (поле is_active = true).
-При необходимости предварительно добавить такое поле в таблицу profiles со значением по умолчанию = false (или 0) (ALTER TABLE + UPDATE)
+4.* РќР°РїРёСЃР°С‚СЊ СЃРєСЂРёРїС‚, РѕС‚РјРµС‡Р°СЋС‰РёР№ РЅРµСЃРѕРІРµСЂС€РµРЅРЅРѕР»РµС‚РЅРёС… РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№ РєР°Рє РЅРµР°РєС‚РёРІРЅС‹С… (РїРѕР»Рµ is_active = true).
+РџСЂРё РЅРµРѕР±С…РѕРґРёРјРѕСЃС‚Рё РїСЂРµРґРІР°СЂРёС‚РµР»СЊРЅРѕ РґРѕР±Р°РІРёС‚СЊ С‚Р°РєРѕРµ РїРѕР»Рµ РІ С‚Р°Р±Р»РёС†Сѓ profiles СЃРѕ Р·РЅР°С‡РµРЅРёРµРј РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ = false (РёР»Рё 0) (ALTER TABLE + UPDATE)
 */
--- добавим поле is_active 
+-- РґРѕР±Р°РІРёРј РїРѕР»Рµ is_active 
 ALTER TABLE vk.profiles 
  ADD COLUMN is_active BIT DEFAULT 1;
 
--- сделать невовершеннолетних неактивными
+-- СЃРґРµР»Р°С‚СЊ РЅРµРІРѕРІРµСЂС€РµРЅРЅРѕР»РµС‚РЅРёС… РЅРµР°РєС‚РёРІРЅС‹РјРё
 UPDATE profiles
    SET is_active = 0
  WHERE (birthday + INTERVAL 18 YEAR) > NOW();
 
--- проверим не активных
+-- РїСЂРѕРІРµСЂРёРј РЅРµ Р°РєС‚РёРІРЅС‹С…
 SELECT user_id, birthday, is_active
   FROM profiles
  WHERE is_active = 0
  ORDER BY birthday;
 
--- проверим активных
+-- РїСЂРѕРІРµСЂРёРј Р°РєС‚РёРІРЅС‹С…
 SELECT user_id, birthday, is_active
   FROM profiles
  WHERE is_active = 1
  ORDER BY birthday;
 
 /*
-5.* Написать скрипт, удаляющий сообщения «из будущего» (дата позже сегодняшней) (DELETE)
+5.* РќР°РїРёСЃР°С‚СЊ СЃРєСЂРёРїС‚, СѓРґР°Р»СЏСЋС‰РёР№ СЃРѕРѕР±С‰РµРЅРёСЏ В«РёР· Р±СѓРґСѓС‰РµРіРѕВ» (РґР°С‚Р° РїРѕР·Р¶Рµ СЃРµРіРѕРґРЅСЏС€РЅРµР№) (DELETE)
 */
 
--- добавим флаг is_deleted 
+-- РґРѕР±Р°РІРёРј С„Р»Р°Рі is_deleted 
 ALTER TABLE messages 
  ADD COLUMN is_deleted BIT DEFAULT 0;
 
--- отметим пару сообщений неправильной датой
+-- РѕС‚РјРµС‚РёРј РїР°СЂСѓ СЃРѕРѕР±С‰РµРЅРёР№ РЅРµРїСЂР°РІРёР»СЊРЅРѕР№ РґР°С‚РѕР№
 UPDATE messages
    SET created_at = NOW() + INTERVAL 1 YEAR
  LIMIT 2;
 
--- отметим, как удаленные, сообщения "из будущего"
+-- РѕС‚РјРµС‚РёРј, РєР°Рє СѓРґР°Р»РµРЅРЅС‹Рµ, СЃРѕРѕР±С‰РµРЅРёСЏ "РёР· Р±СѓРґСѓС‰РµРіРѕ"
 UPDATE messages
    SET is_deleted = 1
  WHERE created_at > NOW();
 
--- проверим
+-- РїСЂРѕРІРµСЂРёРј
 SELECT id, created_at, is_deleted
   FROM messages
  WHERE created_at > NOW()
  ORDER BY created_at DESC;
 
 /*
--- физически удалим сообщения "из будущего"
+-- С„РёР·РёС‡РµСЃРєРё СѓРґР°Р»РёРј СЃРѕРѕР±С‰РµРЅРёСЏ "РёР· Р±СѓРґСѓС‰РµРіРѕ"
 DELETE FROM messages
 WHERE created_at > NOW()
 */
