@@ -24,7 +24,7 @@ SELECT COUNT(user_id), communities.name
 */
 SELECT from_user_id, CONCAT(users.firstname, ' ', users.lastname) AS user, COUNT(FROM_user_id) 
   FROM messages 
-       JOIN users ON users.id = messages.FROM_user_id
+       JOIN users ON users.id = messages.from_user_id
  WHERE to_user_id = 21
  GROUP BY from_user_id
  ORDER BY COUNT(*) desc
